@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Flower Shop{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-rose-50 text-rose-900">
+  <header class="bg-rose-600 text-white py-4 fixed w-full shadow-md">
+    <div class="container mx-auto flex justify-between items-center px-6">
+      <a href="{% url 'shop:product_list' %}" class="text-2xl font-bold tracking-wide">🌸 Flower Shop</a>
+      <nav>
+        <a href="{% url 'shop:product_list' %}" class="mx-3 hover:text-amber-100">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto pt-20 min-h-screen">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="bg-rose-600 text-white py-4 mt-12">
+    <div class="container mx-auto text-center text-sm">
+      © 2025 Flower Shop. Made with 💐 and love.
+    </div>
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Product{% endblock %}
+
+{% block content %}
+  <h1 class="text-2xl font-bold mb-4">Add New Flower</h1>
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="px-4 py-2 bg-rose-600 text-white rounded hover:bg-rose-700">Add</button>
+  </form>
+{% endblock %}

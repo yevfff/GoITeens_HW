@@ -6,7 +6,9 @@ class User(AbstractUser):
     is_admin_user = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        self.is_staff = self.is_admin_user 
+        if self.is_admin_user:
+            self.is_staff = True
+            self.is_superuser = True
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -25,6 +27,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     stock = models.PositiveIntegerField()
+    image = models.ImageField(upload_to='product_images/')
 
     def __str__(self):
         return f"{self.product_name} ({self.stock} шт)"
