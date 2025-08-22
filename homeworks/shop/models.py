@@ -53,7 +53,6 @@ class Basket(models.Model):
         return f"Кошик: {self.user.username}"
 
 
-
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -66,7 +65,6 @@ class Order(models.Model):
         return f"Замовлення #{self.id} від {self.user.username}"
 
 
-
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -74,3 +72,32 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.product.product_name} x {self.quantity} (Замовлення #{self.order.id})"
+
+
+# 3 моделі для дз:
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    phone_number = models.CharField(max_length=20, blank=True)
+    address = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"Профіль {self.user.username}"
+
+
+class Supplier(models.Model):
+    name = models.CharField(max_length=100)
+    contact_email = models.EmailField()
+    products = models.ManyToManyField(Product, related_name="suppliers", blank=True)  # Тут зробимо ManyToMany
+
+    def __str__(self):
+        return self.name
+
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlists')  # один користувач → багато списків
+    products = models.ManyToManyField(Product, related_name='in_wishlists')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Список бажаного {self.user.username} (#{self.id})"
