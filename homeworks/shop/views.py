@@ -70,6 +70,9 @@ class ProductListView(ListView):
                 'bg-gray-200 text-gray-800'  
             )
 
+        
+        new_products = Product.objects.filter(new=True)
+        context['new_products'] = new_products
         return context
 
 

@@ -28,6 +28,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     stock = models.PositiveIntegerField()
     image = models.ImageField(upload_to='product_images/')
+    new = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.product_name} ({self.stock} шт)"

@@ -3,12 +3,42 @@
 {% block title %}Our Flower Collection{% endblock %}
 
 {% block content %}
-<div class="bg-rose-50">
-  <h1 class="text-3xl font-bold text-rose-900 mb-6 text-center">Welcome to Our Cozy Flower Shop</h1>
+<div class="bg-rose-50 min-h-screen">
+  <h1 class="text-3xl font-bold text-rose-900 mb-6 text-center">
+    Welcome to Our Cozy Flower Shop
+  </h1>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+  {% if new_products %}
+  <div class="mb-10">
+    <h2 class="text-2xl font-semibold text-rose-800 mb-4 text-center">🌸 New Arrivals 🌸</h2>
+    <div class="flex gap-5 overflow-x-auto pb-3 px-3 scrollbar-thin scrollbar-thumb-rose-400 scrollbar-track-rose-100">
+      {% for product in new_products %}
+        <div class="bg-white flex-shrink-0 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 w-64">
+          <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="w-full h-40 object-cover">
+
+          <div class="p-3">
+            <div class="flex justify-between items-center">
+              <h2 class="text-lg font-semibold text-rose-900 truncate">{{ product.product_name }}</h2>
+              <div class="">
+                <span class="text-xs px-2 py-1 rounded-full {{ product.badge_class }}">
+                  {{ product.category.category_name }}
+                </span>
+                <span class="text-xs px-2 py-1 rounded-full bg-green-200">New!</span>
+              </div>
+            </div>
+            <p class="text-sm text-rose-700 mt-2 font-medium">${{ product.price }}</p>
+            
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <h2 class="text-2xl font-semibold text-rose-800 mb-4 text-center">Our Collection</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 px-3">
     {% for product in products %}
-      <div class="bg-rose-100 rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 w-64">
+      <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300">
         <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="w-full h-40 object-cover">
 
         <div class="p-3">
@@ -22,7 +52,7 @@
         </div>
       </div>
     {% empty %}
-      <p class="text-rose-800">No products available.</p>
+      <p class="text-rose-800 col-span-full text-center">No products available.</p>
     {% endfor %}
   </div>
 </div>
