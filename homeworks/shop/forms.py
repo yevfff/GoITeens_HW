@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User, Product
+from .models import User, Product, FeaturedCollection
 
 class UserRegisterForm(UserCreationForm):
     class Meta:
@@ -25,6 +25,13 @@ class LoginForm(AuthenticationForm):
 
 
 class ProductForm(forms.ModelForm):
+    collections = forms.ModelMultipleChoiceField(
+        queryset=FeaturedCollection.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        help_text="Додає цей товар до обраних колекцій"
+    )
+
     class Meta:
         model = Product
-        fields = ['product_name', 'price', 'category', 'stock', 'image']
+        fields = ['product_name', 'price', 'category', 'stock', 'image', 'new']

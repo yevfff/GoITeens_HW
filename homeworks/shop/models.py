@@ -102,3 +102,20 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"Список бажаного {self.user.username} (#{self.id})"
+
+
+
+class FeaturedCollection(models.Model):
+    NAME_CHOICES = (
+        ('main', 'Main'),
+        ('top', 'Top'),
+    )
+    name = models.CharField(max_length=20, choices=NAME_CHOICES, unique=True)
+    products = models.ManyToManyField('Product', related_name='featured_in', blank=True)
+
+    class Meta:
+        verbose_name = "Featured collection"
+        verbose_name_plural = "Featured collections"
+
+    def __str__(self):
+        return self.get_name_display()

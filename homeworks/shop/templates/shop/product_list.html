@@ -8,6 +8,14 @@
     Welcome to Our Cozy Flower Shop
   </h1>
 
+  {% if request.user.is_authenticated and request.user.is_admin_user %}
+    <div class="flex justify-center gap-3 mb-6">
+      <a href="{% url 'shop:add_product' %}" class="px-3 py-2 bg-rose-600 text-white rounded-md">Add product</a>
+      <a href="{% url 'shop:manage_collections' %}" class="px-3 py-2 bg-rose-500 text-white rounded-md">Manage collections</a>
+    </div>
+  {% endif %}
+
+
   {% if new_products %}
   <div class="mb-10">
     <h2 class="text-2xl font-semibold text-rose-800 mb-4 text-center">🌸 New Arrivals 🌸</h2>
@@ -32,6 +40,20 @@
       {% endfor %}
     </div>
   </div>
+  {% endif %}
+
+  {% if featured_main and request.user.is_authenticated and request.user.is_admin_user %}
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold">Main products</h3>
+      <div class="flex gap-4 mt-3">
+        {% for p in featured_main.products.all %}
+          <div class="w-44 bg-white rounded p-2 shadow">
+            <p class="text-sm font-medium">{{ p.id }} — {{ p.product_name }}</p>
+            <p class="text-xs">${{ p.price }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
   {% endif %}
 
   <h2 class="text-2xl font-semibold text-rose-800 mb-4 text-center">Our Collection</h2>

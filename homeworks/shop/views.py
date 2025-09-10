@@ -1,14 +1,10 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-
 from .forms import UserRegisterForm, AdminRegisterForm, LoginForm, ProductForm
 from django.http import JsonResponse
 from django.views.generic import ListView
-from .models import Product
+from .models import Product, FeaturedCollection
 
 def register_user(request):
     if request.method == 'POST':
@@ -43,7 +39,7 @@ def login_view(request):
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
-            return JsonResponse({'success': True}) 
+            return redirect('shop:product_list')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
@@ -53,7 +49,7 @@ class ProductListView(ListView):
     model = Product
     template_name = 'shop/product_list.html'
     context_object_name = 'products'
-    paginate_by = 2
+    paginate_by = 6
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -67,13 +63,16 @@ class ProductListView(ListView):
 
         for product in context['products']:
             product.badge_class = category_color_map.get(
-                product.category.category_name,
+                product.category.category_name if product.category else '',
                 'bg-gray-200 text-gray-800'  
             )
 
-        
         new_products = Product.objects.filter(new=True)
         context['new_products'] = new_products
+
+        context['featured_main'] = FeaturedCollection.objects.filter(name='main').first()
+        context['featured_top'] = FeaturedCollection.objects.filter(name='top').first()
+
         return context
 
 
@@ -85,9 +84,38 @@ def add_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            collections = form.cleaned_data.pop('collections', None)
+            product = form.save()
+            if collections:
+                for coll in collections:
+                    coll.products.add(product)
             return redirect('shop:product_list')
     else:
         form = ProductForm()
 
     return render(request, 'shop/add_product.html', {'form': form})
+
+
+@login_required
+def manage_collections(request):
+    if not request.user.is_admin_user:
+        return redirect('shop:product_list')
+
+    collections = FeaturedCollection.objects.prefetch_related('products').all()
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            collections_selected = form.cleaned_data.pop('collections', None)
+            product = form.save()
+            if collections_selected:
+                for coll in collections_selected:
+                    coll.products.add(product)
+            return redirect('shop:manage_collections')
+    else:
+        form = ProductForm()
+
+    return render(request, 'shop/manage_collections.html', {
+        'collections': collections,
+        'form': form,
+    })

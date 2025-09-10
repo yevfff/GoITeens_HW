@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Collections{% endblock %}
+
+{% block content %}
+  <h1 class="text-2xl font-bold mb-4">Manage Collections (Admin only)</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for coll in collections %}
+      <div class="bg-white rounded-lg shadow p-4">
+        <h2 class="text-lg font-semibold mb-2">{{ coll.get_name_display }}</h2>
+        <ul class="space-y-1 text-sm">
+          {% for p in coll.products.all %}
+            <li>#{{ p.id }} — {{ p.product_name }}</li>
+          {% empty %}
+            <li class="text-gray-500">No products in this collection</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+
+  <hr class="my-6">
+
+  <h2 class="text-xl font-semibold mb-3">Add new product (and assign to collections)</h2>
+  <form method="post" enctype="multipart/form-data" class="space-y-4 max-w-md">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="px-4 py-2 bg-rose-600 text-white rounded">Create product</button>
+  </form>
+{% endblock %}
