@@ -27,7 +27,6 @@
               </div>
             </div>
             <p class="text-sm text-rose-700 mt-2 font-medium">${{ product.price }}</p>
-            
           </div>
         </div>
       {% endfor %}
@@ -55,5 +54,28 @@
       <p class="text-rose-800 col-span-full text-center">No products available.</p>
     {% endfor %}
   </div>
+
+  <div class="flex justify-center mt-8">
+    <div class="inline-flex items-center space-x-2">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" 
+          class="px-3 py-1 bg-rose-200 text-rose-800 rounded-lg hover:bg-rose-300">
+          ⬅ Prev
+        </a>
+      {% endif %}
+
+      <span class="px-3 py-1 bg-white border rounded-lg shadow">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" 
+          class="px-3 py-1 bg-rose-200 text-rose-800 rounded-lg hover:bg-rose-300">
+          Next ➡
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
 </div>
 {% endblock %}
